@@ -183,7 +183,8 @@ class Aliens:
             bullet.draw_bullet()
         
         # Draw the enemies
-        self.enemies.draw(self.screen)
+        for enemy in self.enemies.sprites():
+            self.enemies.draw(self.screen)
 
         # Flip the screen buffer
         pygame.display.flip()
