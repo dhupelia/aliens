@@ -17,6 +17,8 @@ class Aliens:
 
         self.settings = GameSettings()
 
+        self.counter = 0
+
         # Set a clock for fps
         self.clock = pygame.time.Clock()
 
@@ -54,11 +56,11 @@ class Aliens:
             # Update the ship each frame
             self.ship.update()
 
-            # Update the aliens each frame
-            self._update_aliens()
-
             # Update the bullets each frame
             self._update_bullets()
+
+            # Update the aliens each frame
+            self._update_aliens()
 
             # Draw the screen
             self._update_screen()
@@ -87,14 +89,16 @@ class Aliens:
             self._change_fleet_direction()
             switch_direction = False
 
+
     def _change_fleet_direction(self):
+        # Toggle the right/left movement boolean
+        game.settings.aliens_moving_right = not game.settings.aliens_moving_right
+
         # Loop through all of the ships
         for x in self.enemies.sprites():
             # Drop each ship's y position by the settings drop speed
             x.rect.y += self.settings.alien_drop_speed
 
-            # Toggle the right/left movement boolean
-            game.settings.aliens_moving_right = not game.settings.aliens_moving_right
 
 
     def _update_bullets(self):
@@ -105,6 +109,9 @@ class Aliens:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+
+        # Check for any bullet hits on aliens and delete any that did
+        collisions = pygame.sprite.groupcollide(self.bullets, self.enemies, True, True)
 
 
     def _check_events(self):

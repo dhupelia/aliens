@@ -16,7 +16,7 @@ class GameSettings:
         self.ship_speed = 5.1
 
         # Bullet Settings
-        self.bullet_speed = 7
+        self.bullet_speed = 9.0
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (255, 0, 0)
