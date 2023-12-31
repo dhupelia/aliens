@@ -91,10 +91,11 @@ class Aliens:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = True
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = True
+        # Disable up/down movement by ignoring the keydown event of up/down arrows, thereby never setting the up or down flags to True
+        # elif event.key == pygame.K_UP:
+        #    self.ship.moving_up = True
+        # elif event.key == pygame.K_DOWN:
+        #    self.ship.moving_down = True
         elif event.key == pygame.K_SPACE:
             if len(self.bullets) < self.settings.max_bullets:
                 self._fire_bullet()
@@ -143,19 +144,8 @@ class Aliens:
                 # Increment the ship counter
                 ship_counter += 1
 
-                # Instantiate a new alien
-                new_alien = Alien(self)
-
-                # Set the new alien's x position
-                new_alien.x = current_x
-                new_alien.rect.x = current_x
-
-                # Set the new alien's y position
-                new_alien.y = current_y
-                new_alien.rect.y = current_y
-
-                # Add the alien to the alien sprite group
-                self.enemies.add(new_alien)
+                # Create the next alien
+                self._create_alien(current_x, current_y)
 
                 # Set the next alien's starting X position to 2 times the width of one alien (so they're evenly spaced)
                 # NOTE: this spacing is arbitrary (could be whatever)
@@ -164,6 +154,24 @@ class Aliens:
             # Set the next row of aliens starting Y position to 2 times the width of one alien (so they're evenly spaced)
             # NOTE: this spacing is arbitrary (could be whatever)
             current_y += 2 * self.alien_height
+
+
+    def _create_alien(self, x_position, y_position):
+        ### Create an alien and place it at the specified position
+
+        # Instantiate a new alien
+        new_alien = Alien(self)
+
+        # Set the new alien's x position
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+
+        # Set the new alien's y position
+        new_alien.y = y_position
+        new_alien.rect.y = y_position
+
+        # Add the alien to the alien sprite group
+        self.enemies.add(new_alien)
 
 
     def _fire_bullet(self):
@@ -183,8 +191,7 @@ class Aliens:
             bullet.draw_bullet()
         
         # Draw the enemies
-        for enemy in self.enemies.sprites():
-            self.enemies.draw(self.screen)
+        self.enemies.draw(self.screen)
 
         # Flip the screen buffer
         pygame.display.flip()

@@ -20,7 +20,7 @@ class GameSettings:
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (255, 0, 0)
-        self.max_bullets = 12
+        self.max_bullets = 8
 
         # Alien settings
         self.max_aliens_per_row = 7
