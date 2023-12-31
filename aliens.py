@@ -5,6 +5,7 @@ import pygame
 
 from settings import GameSettings
 from ship import Ship
+from enemy import Alien
 from bullet import Bullet
 
 class Aliens:
@@ -32,10 +33,14 @@ class Aliens:
         self.bg_color = self.settings.bg_color
 
         # Caption the game window
-        pygame.display.set_caption("Aliens!")
+        pygame.display.set_caption("--- Cat vs Aliens ---")
 
         # Create the ship instance
         self.ship = Ship(self)
+
+        # Create a container for a group of enemies and spawn the enemies
+        self.enemies = pygame.sprite.Group()
+        self._create_fleet()
 
         # Create a container for a group of bullets
         self.bullets = pygame.sprite.Group()
@@ -106,6 +111,61 @@ class Aliens:
             self.ship.moving_down = False
 
 
+    def _create_fleet(self):
+        # Make an alien
+        alien = Alien(self)
+        self.enemies.add(alien)
+
+        # Determine the width and height of each alien to space them out
+        self.alien_width = alien.rect.width
+        self.alien_height = alien.rect.width
+
+        # Determine the size of the Sprite for spacing out purposes
+        alien_width, alien_height = alien.rect.size
+
+        # Setup tracking variables for the position of each alien we need to create
+        current_x = alien_width
+        current_y = alien_height
+
+        # Setup counters for how many rows and columns of aliens we need
+        row_counter = 0
+
+        # Used nested while loops to create multiple rows of aliens
+        while row_counter < self.settings.max_aliens_rows:
+            # Increment the row counter
+            row_counter += 1
+
+            # Setup a counter to track how many ships were created per row
+            ship_counter = 0
+
+            # Create a row of spaced out aliens (hahaha)
+            while ship_counter < self.settings.max_aliens_per_row:
+                # Increment the ship counter
+                ship_counter += 1
+
+                # Instantiate a new alien
+                new_alien = Alien(self)
+
+                # Set the new alien's x position
+                new_alien.x = current_x
+                new_alien.rect.x = current_x
+
+                # Set the new alien's y position
+                new_alien.y = current_y
+                new_alien.rect.y = current_y
+
+                # Add the alien to the alien sprite group
+                self.enemies.add(new_alien)
+
+                # Set the next alien's starting X position to 2 times the width of one alien (so they're evenly spaced)
+                # NOTE: this spacing is arbitrary (could be whatever)
+                current_x += 2 * self.alien_width
+            
+            # Set the next row of aliens starting Y position to 2 times the width of one alien (so they're evenly spaced)
+            # NOTE: this spacing is arbitrary (could be whatever)
+            current_y += 2 * self.alien_height
+
+
     def _fire_bullet(self):
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
@@ -122,9 +182,11 @@ class Aliens:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         
+        # Draw the enemies
+        self.enemies.draw(self.screen)
+
         # Flip the screen buffer
         pygame.display.flip()
-
  
 if __name__ == '__main__':
     # Make a game instance and run the game
