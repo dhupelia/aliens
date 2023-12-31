@@ -3,10 +3,13 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
+from time import sleep
+
 from settings import GameSettings
 from ship import Ship
 from enemy import Alien
 from bullet import Bullet
+from stats import GameStats
 
 class Aliens:
     ## Class to manage the game assets and behaviors
@@ -15,9 +18,11 @@ class Aliens:
         ## Init the game
         pygame.init()
 
+        # Grab the game settings
         self.settings = GameSettings()
 
-        self.counter = 0
+        # Setup the game stats
+        self.stats = GameStats(self)
 
         # Set a clock for fps
         self.clock = pygame.time.Clock()
@@ -73,6 +78,42 @@ class Aliens:
         # Update the aliens each frame
         self._check_fleet_edges()
         self.enemies.update()
+
+        # Check for collision between the aliens and the player ship
+        if (pygame.sprite.spritecollideany(self.ship, self.enemies)):
+            self._ship_hit()
+
+
+    def _ship_hit(self):
+        # Handle a ship being hit
+
+        # Decrement the ships remaining
+        self.stats.ships_remaining -= 1
+
+        # Clear out the aliens and bullets
+        self.enemies.empty()
+        self.bullets.empty()
+
+        # Setup a new fleet
+        self._create_fleet()
+
+        # Move the ship back to center
+        self.ship.center_ship()
+
+        # Pause the game for a moment to let the player gather their thoughts
+        sleep(0.5)
+
+
+    def _check_fleet_bottom(self):
+        # Get the window/screen width and height
+        width, height = pygame.display.get_surface().get_size()
+
+        # Loop through all of the alien objects
+        for alien in self.enemies.sprites():
+            # If the alien's rect has reached the bottom edge call it the same as a hit ship
+            if alien.rect.bottom >= height:
+                self._ship_hit()
+                break
 
 
     def _check_fleet_edges(self):

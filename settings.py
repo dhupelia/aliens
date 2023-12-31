@@ -27,8 +27,11 @@ class GameSettings:
         self.max_aliens_rows = 4
 
         # Alien movement settings
-        self.alien_move_speed = 2.5
+        self.alien_move_speed = 5.5
         self.alien_drop_speed = 20
 
         # Create a flag to track whether the fleet should be moving right or left
         self.aliens_moving_right = True
+
+        # Set the maximum number of lives
+        self.ship_limit = 3

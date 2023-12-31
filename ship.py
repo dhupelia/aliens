@@ -15,9 +15,8 @@ class Ship:
         self.image = pygame.transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()
 
-        # Start each new ship at the bottom center of the screen and then nudge it up a bit
-        self.rect.midbottom = self.screen_rect.midbottom
-        self.rect.y = self.rect.y - 25
+        # Reset the position of the ship
+        self.center_ship()
 
         # Create variables to track the current x and y position of this ship
         self.x = float(self.rect.x)
@@ -42,3 +41,8 @@ class Ship:
             self.rect.y -= self.settings.ship_speed
         elif (self.moving_down == True) and (self.rect.bottom < self.screen_rect.bottom):
             self.rect.y += self.settings.ship_speed
+
+    def center_ship(self):
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
+        self.rect.y = self.rect.y - 25
