@@ -54,6 +54,9 @@ class Aliens:
             # Update the ship each frame
             self.ship.update()
 
+            # Update the aliens each frame
+            self._update_aliens()
+
             # Update the bullets each frame
             self._update_bullets()
 
@@ -62,6 +65,36 @@ class Aliens:
 
             # Tick the frame counter to try and remain a constant 60
             self.clock.tick(60)
+
+
+    def _update_aliens(self):
+        # Update the aliens each frame
+        self._check_fleet_edges()
+        self.enemies.update()
+
+
+    def _check_fleet_edges(self):
+        # Set a flag to track whether we should switch directions
+        switch_direction = False
+
+        # Check if the fleet needs to be dropped and switched direciton
+        for x in self.enemies.sprites():
+            if x.check_edges() == True:
+                switch_direction = True
+
+        # If we decided to switch directions, move forward and reset the toggle
+        if switch_direction == True:
+            self._change_fleet_direction()
+            switch_direction = False
+
+    def _change_fleet_direction(self):
+        # Loop through all of the ships
+        for x in self.enemies.sprites():
+            # Drop each ship's y position by the settings drop speed
+            x.rect.y += self.settings.alien_drop_speed
+
+            # Toggle the right/left movement boolean
+            game.settings.aliens_moving_right = not game.settings.aliens_moving_right
 
 
     def _update_bullets(self):
@@ -178,7 +211,9 @@ class Aliens:
 
         # Add the alien to the alien sprite group
         self.enemies.add(new_alien)
-        print(f"Alien # {len(self.enemies)}:   {x_position}, {y_position}")
+
+        # Debug statement to record each alien being created
+        # print(f"Alien # {len(self.enemies)}:   {x_position}, {y_position}")
 
     def _fire_bullet(self):
         new_bullet = Bullet(self)
