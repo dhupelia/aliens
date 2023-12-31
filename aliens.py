@@ -119,7 +119,7 @@ class Aliens:
 
         # Determine the width and height of each alien to space them out
         self.alien_width = alien.rect.width
-        self.alien_height = alien.rect.width
+        self.alien_height = alien.rect.height
 
         # Determine the size of the Sprite for spacing out purposes
         alien_width, alien_height = alien.rect.size
@@ -151,9 +151,15 @@ class Aliens:
                 # NOTE: this spacing is arbitrary (could be whatever)
                 current_x += 2 * self.alien_width
             
+            # Reset the x position for the next row to start back at the left again
+            current_x = alien_width
+
             # Set the next row of aliens starting Y position to 2 times the width of one alien (so they're evenly spaced)
             # NOTE: this spacing is arbitrary (could be whatever)
             current_y += 2 * self.alien_height
+
+            # Reset the ship counter for the next row of aliens
+            ship_counter = 0
 
 
     def _create_alien(self, x_position, y_position):
@@ -172,7 +178,7 @@ class Aliens:
 
         # Add the alien to the alien sprite group
         self.enemies.add(new_alien)
-
+        print(f"Alien # {len(self.enemies)}:   {x_position}, {y_position}")
 
     def _fire_bullet(self):
         new_bullet = Bullet(self)
