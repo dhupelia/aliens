@@ -28,7 +28,7 @@ class GameSettings:
 
         # Alien movement settings
         self.alien_move_speed = 5.5
-        self.alien_drop_speed = 20
+        self.alien_drop_speed = 25
 
         # Create a flag to track whether the fleet should be moving right or left
         self.aliens_moving_right = True

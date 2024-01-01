@@ -58,14 +58,16 @@ class Aliens:
             # Poll for kb/m events
             self._check_events()
 
-            # Update the ship each frame
-            self.ship.update()
+            # Check if we're still in an active game loop and only update ships/bullets/aliens if so
+            if self.stats.game_active == True:
+                # Update the ship each frame
+                self.ship.update()
 
-            # Update the bullets each frame
-            self._update_bullets()
+                # Update the bullets each frame
+                self._update_bullets()
 
-            # Update the aliens each frame
-            self._update_aliens()
+                # Update the aliens each frame
+                self._update_aliens()
 
             # Draw the screen
             self._update_screen()
@@ -77,6 +79,7 @@ class Aliens:
     def _update_aliens(self):
         # Update the aliens each frame
         self._check_fleet_edges()
+        self._check_fleet_bottom()
         self.enemies.update()
 
         # Check for collision between the aliens and the player ship
@@ -90,18 +93,24 @@ class Aliens:
         # Decrement the ships remaining
         self.stats.ships_remaining -= 1
 
-        # Clear out the aliens and bullets
-        self.enemies.empty()
+        # Clear out the bullets
         self.bullets.empty()
 
-        # Setup a new fleet
-        self._create_fleet()
+        # Check if we're out of lives else reset the fleet and ship
+        if self.stats.ships_remaining <= 0:
+            self.stats.game_active = False
+        else:
+            # Clear out the aliens
+            self.enemies.empty()
 
-        # Move the ship back to center
-        self.ship.center_ship()
+            # Setup a new fleet
+            self._create_fleet()
 
-        # Pause the game for a moment to let the player gather their thoughts
-        sleep(0.5)
+            # Move the ship back to center
+            self.ship.center_ship()
+
+            # Pause the game for a moment to let the player gather their thoughts
+            sleep(0.5)
 
 
     def _check_fleet_bottom(self):
