@@ -51,7 +51,6 @@ class GameSettings:
             # Alien movement settings
             self.alien_move_speed = 11.5
             self.alien_drop_speed = 25
-            print(f"Alien move speed is now {self.alien_move_speed}")
 
         # Create a flag to track whether the fleet should be moving right or left
         self.aliens_moving_right = True
@@ -60,4 +59,3 @@ class GameSettings:
     def increase_speed(self):
         #self.ship_speed *= self.scale_speed
         self.alien_move_speed = self.alien_move_speed * self.scale_speed
-        print(f"Alien move speed is now {self.alien_move_speed}")

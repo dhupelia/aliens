@@ -113,6 +113,9 @@ class Aliens:
 
             # Move the ship back to center
             self.ship.center_ship()
+
+            # Increase the enemy wave counter
+            self.stats.enemy_wave += 1
             
             # Pause the game for a moment to let the player gather their thoughts
             sleep(0.5)

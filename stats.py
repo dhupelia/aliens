@@ -11,3 +11,5 @@ class GameStats:
     def reset_stats(self):
         self.ships_remaining = self.settings.ship_limit
         self.score = 0
+        self.enemy_wave = 1
+        print(self.enemy_wave)
