@@ -116,6 +116,7 @@ class Aliens:
 
             # Increase the enemy wave counter
             self.stats.enemy_wave += 1
+            self.board.prep_enemy_wave()
             
             # Pause the game for a moment to let the player gather their thoughts
             sleep(0.5)
@@ -369,6 +370,9 @@ class Aliens:
 
         # Draw the scoreboard
         self.board.show_score()
+
+        # Draw the current level
+        self.board.show_enemy_wave()
 
         # Flip the screen buffer
         pygame.display.flip()
