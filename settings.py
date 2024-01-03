@@ -26,12 +26,25 @@ class GameSettings:
         self.max_aliens_per_row = 6
         self.max_aliens_rows = 4
 
+        # Set the maximum number of lives
+        self.ship_limit = 3
+
+        # Set the scale at which the speed of aliens (our difficulty) increases each wave
+        self.scale_speed = 1.1
+
+        # Initialize dynamic settings that will need to be reset each replay
+        self.initialize_dynamic_settings()
+
+
+    def initialize_dynamic_settings(self):
         # Alien movement settings
-        self.alien_move_speed = 5.5
+        self.alien_move_speed = 11.5
         self.alien_drop_speed = 25
 
         # Create a flag to track whether the fleet should be moving right or left
         self.aliens_moving_right = True
 
-        # Set the maximum number of lives
-        self.ship_limit = 3
+
+    def increase_speed(self):
+        self.ship_speed *= self.scale_speed
+        self.alien_move_speed *= self.scale_speed

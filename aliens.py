@@ -10,6 +10,7 @@ from ship import Ship
 from enemy import Alien
 from bullet import Bullet
 from stats import GameStats
+from button import Button
 
 class Aliens:
     ## Class to manage the game assets and behaviors
@@ -51,6 +52,9 @@ class Aliens:
 
         # Create a container for a group of bullets
         self.bullets = pygame.sprite.Group()
+
+        # Create the play button (doing this in init since we only need the one button)
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         ## Main Game Loop
@@ -98,7 +102,11 @@ class Aliens:
 
         # Check if we're out of lives else reset the fleet and ship
         if self.stats.ships_remaining <= 0:
+            # Out of lives!  Disable the game
             self.stats.game_active = False
+
+            # Bring back the mouse cursor so the player can interact with UI again
+            pygame.mouse.set_visible(True)
         else:
             # Clear out the aliens
             self.enemies.empty()
@@ -174,32 +182,59 @@ class Aliens:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.stats.game_active == False:
+                    position = pygame.mouse.get_pos()
+                    self._check_play_button(position)
+
+
+    def _check_play_button(self, position):
+        # Check if the mouse position was on the play button when clicked
+        if self.play_button.rect.collidepoint(position):
+            # Set the game active now
+            self.stats.game_active = True
+
+            # Reset the stats
+            self.stats.reset_stats()
+
+            # Reset the fleet and bullets
+            self.bullets.empty()
+            self.enemies.empty()
+
+            # Create a new fleet and center the ship
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # Hide the mouse cursor since the game is starting
+            pygame.mouse.set_visible(False)
 
 
     def _check_keydown_events(self, event):
-        if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = True
-        elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = True
-        # Disable up/down movement by ignoring the keydown event of up/down arrows, thereby never setting the up or down flags to True
-        # elif event.key == pygame.K_UP:
-        #    self.ship.moving_up = True
-        # elif event.key == pygame.K_DOWN:
-        #    self.ship.moving_down = True
-        elif event.key == pygame.K_SPACE:
-            if len(self.bullets) < self.settings.max_bullets:
-                self._fire_bullet()
+        if self.stats.game_active == True:
+            if event.key == pygame.K_RIGHT:
+                self.ship.moving_right = True
+            elif event.key == pygame.K_LEFT:
+                self.ship.moving_left = True
+            # Disable up/down movement by ignoring the keydown event of up/down arrows, thereby never setting the up or down flags to True
+            # elif event.key == pygame.K_UP:
+            #    self.ship.moving_up = True
+            # elif event.key == pygame.K_DOWN:
+            #    self.ship.moving_down = True
+            elif event.key == pygame.K_SPACE:
+                if len(self.bullets) < self.settings.max_bullets:
+                    self._fire_bullet()
 
 
     def _check_keyup_events(self, event):
-        if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = False
-        elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = False
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = False
+        if self.stats.game_active == True:
+            if event.key == pygame.K_RIGHT:
+                self.ship.moving_right = False
+            elif event.key == pygame.K_LEFT:
+                self.ship.moving_left = False
+            elif event.key == pygame.K_UP:
+                self.ship.moving_up = False
+            elif event.key == pygame.K_DOWN:
+                self.ship.moving_down = False
 
 
     def _create_fleet(self):
@@ -290,6 +325,10 @@ class Aliens:
         
         # Draw the enemies
         self.enemies.draw(self.screen)
+
+        # Draw the play button if the game isn't currently active
+        if self.stats.game_active == False:
+            self.play_button.draw_button()
 
         # Flip the screen buffer
         pygame.display.flip()
