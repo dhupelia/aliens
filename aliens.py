@@ -104,11 +104,9 @@ class Aliens:
 
             # Increase the point value for the next round
             self.settings.alien_points_scale = self.settings.alien_points_scale * self.settings.alien_points_multiplier
-            print(self.settings.alien_points_scale)
-            print(self.settings.alien_points_multiplier)
 
             # Reset the game dynamic stats and settings
-            self.settings.initialize_dynamic_settings(False)
+            self.settings.initialize_dynamic_settings(False, False)
    
             # Setup a new fleet
             self._create_fleet()
@@ -205,7 +203,7 @@ class Aliens:
         # Add points for any killed aliens this tick
         if collisions:
             self.stats.score += (self.settings.alien_points * self.settings.alien_points_scale)
-            print(self.stats.score)
+            self.board.prep_scoreboard()
 
 
     def _check_events(self):

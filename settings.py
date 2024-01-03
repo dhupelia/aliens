@@ -42,20 +42,22 @@ class GameSettings:
         self.initialize_dynamic_settings()
 
 
-    def initialize_dynamic_settings(self, reset_scale = True):
-        # Alien movement settings
-        self.alien_move_speed = 11.5
-        self.alien_drop_speed = 25
-
+    def initialize_dynamic_settings(self, reset_scale = True, reset_speed = True):
         if reset_scale == True:
             # Set the scale at which the point values increase each wave for this game
             self.alien_points_scale = 1
-            print("reset the scale back to 1!")
+
+        if reset_speed == True:
+            # Alien movement settings
+            self.alien_move_speed = 11.5
+            self.alien_drop_speed = 25
+            print(f"Alien move speed is now {self.alien_move_speed}")
 
         # Create a flag to track whether the fleet should be moving right or left
         self.aliens_moving_right = True
 
 
     def increase_speed(self):
-        self.ship_speed *= self.scale_speed
-        self.alien_move_speed *= self.scale_speed
+        #self.ship_speed *= self.scale_speed
+        self.alien_move_speed = self.alien_move_speed * self.scale_speed
+        print(f"Alien move speed is now {self.alien_move_speed}")
