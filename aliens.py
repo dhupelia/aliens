@@ -11,6 +11,7 @@ from enemy import Alien
 from bullet import Bullet
 from stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 class Aliens:
     ## Class to manage the game assets and behaviors
@@ -56,6 +57,9 @@ class Aliens:
         # Create the play button (doing this in init since we only need the one button)
         self.play_button = Button(self, "Play")
 
+        # Create the scoreboard
+        self.board = Scoreboard(self)
+
     def run_game(self):
         ## Main Game Loop
         while True:
@@ -90,6 +94,30 @@ class Aliens:
         if (pygame.sprite.spritecollideany(self.ship, self.enemies)):
             self._ship_hit()
 
+        # Check if we ran out of aliens and start the next wave
+        if len(self.enemies) < 1:
+             # Clear out the bullets
+            self.bullets.empty()
+
+            # Make the game harder for the next wave by speeding up the ships each round
+            self.settings.increase_speed()
+
+            # Increase the point value for the next round
+            self.settings.alien_points_scale = self.settings.alien_points_scale * self.settings.alien_points_multiplier
+            print(self.settings.alien_points_scale)
+            print(self.settings.alien_points_multiplier)
+
+            # Reset the game dynamic stats and settings
+            self.settings.initialize_dynamic_settings(False)
+   
+            # Setup a new fleet
+            self._create_fleet()
+
+            # Move the ship back to center
+            self.ship.center_ship()
+            
+            # Pause the game for a moment to let the player gather their thoughts
+            sleep(0.5)
 
     def _ship_hit(self):
         # Handle a ship being hit
@@ -107,6 +135,9 @@ class Aliens:
 
             # Bring back the mouse cursor so the player can interact with UI again
             pygame.mouse.set_visible(True)
+
+            # Reset the game dynamic stats and settings
+            self.settings.initialize_dynamic_settings()
         else:
             # Clear out the aliens
             self.enemies.empty()
@@ -170,6 +201,11 @@ class Aliens:
 
         # Check for any bullet hits on aliens and delete any that did
         collisions = pygame.sprite.groupcollide(self.bullets, self.enemies, True, True)
+
+        # Add points for any killed aliens this tick
+        if collisions:
+            self.stats.score += (self.settings.alien_points * self.settings.alien_points_scale)
+            print(self.stats.score)
 
 
     def _check_events(self):
@@ -329,6 +365,9 @@ class Aliens:
         # Draw the play button if the game isn't currently active
         if self.stats.game_active == False:
             self.play_button.draw_button()
+
+        # Draw the scoreboard
+        self.board.show_score()
 
         # Flip the screen buffer
         pygame.display.flip()
